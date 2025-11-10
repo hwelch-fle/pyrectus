@@ -4,7 +4,7 @@ from typing import Any, TypedDict, Literal
 
 # Ported from ..\..\submodules\openapi\openapi\components\schemas
 
-class Activity(TypedDict):
+class DirectusActivity(TypedDict):
     id: int
     """Unique identifier for the object."""
     
@@ -41,7 +41,7 @@ class Activity(TypedDict):
     revisions: list[Revision]
     """Any changes that were made in this activity. One-to-many to revisions."""
   
-class Collection(TypedDict):
+class DirectusCollection(TypedDict):
     collection: str
     """Name of the collection. This matches the table name in the database."""
     
@@ -100,7 +100,7 @@ class Collection(TypedDict):
     versioning: bool
     """Whether or not Content Versioning is enabled for this collection."""
 
-class Comment(TypedDict):
+class DirectusComment(TypedDict):
     
     collection: str
     """Collection identifier in which the item resides. 
@@ -133,7 +133,7 @@ class Comment(TypedDict):
     """The user who last updated the comment. Many-to-one to users. 
     (`User.user`)"""
     
-class Dashboard(TypedDict):
+class DirectusDashboard(TypedDict):
     id: str
     """Primary key of the dashboard (uuid)"""
     
@@ -158,14 +158,14 @@ class Dashboard(TypedDict):
     panels: list[str]
     """Panels that are in this dashboard. One-to-many to panels. (`list[Panel.id]`)"""
 
-class Diff(TypedDict):
+class DirectusDiff(TypedDict):
     hash: str
     """Hash of the diff"""
     
     diff: dict[str, Any]
     """The diff object (collections, fields, relations)"""
 
-class Extension(TypedDict):
+class DirectusExtension(TypedDict):
     enabled: bool
     """Whether or not the extension is enabled."""
     id: str
@@ -181,7 +181,7 @@ class Extension(TypedDict):
     partial: bool
     """Whether or not a bundles entries can be individually disabled. This is applicable to bundle type extensions only."""
     
-class Field(TypedDict):
+class DirectusField(TypedDict):
     id: int
     """Unique ID of the Field"""
     
@@ -240,7 +240,7 @@ class Field(TypedDict):
     validation_message: str
     """Validation message that is displayed to the user"""
     
-class File(TypedDict):
+class DirectusFile(TypedDict):
     id: str
     """Unique identifier for the file. (uuid)"""
     
@@ -317,7 +317,7 @@ class File(TypedDict):
     uploaded_on: str
     """When the file was last uploaded/replaced. (`ISO8601`)"""
       
-class Flow(TypedDict):
+class DirectusFlow(TypedDict):
     id: str
     """Unique identifier for the flow. (uuid)"""
     
@@ -360,7 +360,7 @@ class Flow(TypedDict):
     operations: list[str]
     """Array of all operations associated with the Flow (`list[Operation.id]`)"""
         
-class Folder(TypedDict):
+class DirectusFolder(TypedDict):
     id: str
     """Unique identifier for the folder. (uuid)"""
     
@@ -371,13 +371,13 @@ class Folder(TypedDict):
     """Unique identifier of the parent folder. 
     This allows for nested folders. (Folder.id)"""
     
-class Item(TypedDict):
+class DirectusItem(TypedDict):
     """Items are Schema dependant, 
     `id` is the only non-user defined field that is guaranteed"""
     id: str
     """Unique ID for the item"""
     
-class Notification(TypedDict):
+class DirectusNotification(TypedDict):
     
     id: int
     """Primary key of the revision."""
@@ -406,7 +406,7 @@ class Notification(TypedDict):
     item: str
     """Primary key of the item this notification references as a string."""
       
-class Operation(TypedDict):
+class DirectusOperation(TypedDict):
     id: str
     """Unique identifier for the operation. (uuid)"""
     
@@ -449,7 +449,7 @@ class Operation(TypedDict):
     user_created: str
     """The user who created the operation. (`User.id`)"""
       
-class Panel(TypedDict):
+class DirectusPanel(TypedDict):
     id: str
     """Primary key of the panel. (uuid)"""
     
@@ -500,7 +500,7 @@ class Panel(TypedDict):
     user_created: str
     """User that created the panel. Many-to-one to users. (`User.id`)"""
 
-class Permission(TypedDict):
+class DirectusPermission(TypedDict):
     id: int
     """Unique identifier for the permission."""
     
@@ -528,7 +528,7 @@ class Permission(TypedDict):
     """Policy this permission applies to. 
     Many-to-one to policies. (uuid)(`Policy.id`)"""
       
-class Policy(TypedDict):
+class DirectusPolicy(TypedDict):
     id: str
     """Primary key of the policy (uuid)"""
     
@@ -575,7 +575,7 @@ class Policy(TypedDict):
     """The permissions assigned to this policy. 
     One-to-many to permissions. (`list[Permission.id]`)"""
 
-class Preset(TypedDict):
+class DirectusPreset(TypedDict):
     id: int
     """Unique identifier for this single collection preset."""
     
@@ -614,7 +614,7 @@ class Preset(TypedDict):
     """A list of filters to apply to the Preset. 
     See: https://directus.io/docs/guides/connect/filter-rules"""
     
-class Query(TypedDict):
+class DirectusQuery(TypedDict):
     fields: list[str]
     """Control what fields are being returned in the object. 
     (`list[Field.field] | * | *.*`)"""
@@ -658,7 +658,7 @@ class Query(TypedDict):
     """Retrieve relational items 
     excluding reverse relations when using wildcard fields."""
 
-class Relation(TypedDict):
+class DirectusRelation(TypedDict):
     id: int
     """Unique identifier for the relation."""
     
@@ -695,7 +695,7 @@ class Relation(TypedDict):
     one_deselect_action: str
     """NO DOC"""
 
-class Revision(TypedDict):
+class DirectusRevision(TypedDict):
     id: int
     """Unique identifier for the revision."""
     
@@ -748,7 +748,7 @@ class Revision(TypedDict):
     """Associated version of this revision. Many-to-one to versions. 
     (`Version.key`)"""
     
-class Role(TypedDict):
+class DirectusRole(TypedDict):
     id: str
     """Unique identifier for the role. (uuid)"""
     
@@ -778,7 +778,7 @@ class Role(TypedDict):
     """The users in this role. 
     One-to-many to users. (`list[User.id]`)"""
 
-class Schema(TypedDict):
+class DirectusSchema(TypedDict):
     version: int
     """Schema version identifier"""
     directus: str
@@ -792,7 +792,7 @@ class Schema(TypedDict):
     relations: list[Relation]
     """Schema Relations"""
 
-class StorageAsset(TypedDict):
+class DirectusStorageAsset(TypedDict):
     key: str
     """Key for the asset. Used in the assets endpoint."""
     
@@ -825,7 +825,7 @@ class StorageAsset(TypedDict):
     See: https://sharp.pixelplumbing.com/api-operation/ for valid funcs
     """
 
-class Setting(TypedDict):
+class DirectusSetting(TypedDict):
     id: int
     """Unique identifier for the setting."""
     
@@ -918,7 +918,7 @@ class Setting(TypedDict):
     report_feature_url: str
     """Link to the feature request page. (url)"""
 
-class Share(TypedDict):
+class DirectusShare(TypedDict):
     id: str
     """Primary key of the share (uuid)"""
 
@@ -962,7 +962,7 @@ class Share(TypedDict):
     max_uses: int
     """The maximum number of times the shared item can be viewed."""
     
-class Translation(TypedDict):
+class DirectusTranslation(TypedDict):
     id: str
     """Primary key of the translations."""
 
@@ -975,7 +975,7 @@ class Translation(TypedDict):
     string: str
     """The translation value."""
     
-class User(TypedDict):
+class DirectusUser(TypedDict):
     id: str
     """Unique identifier for the user."""
 
@@ -1065,7 +1065,7 @@ class User(TypedDict):
     theme_dark_overrides: Any
     """Customization for dark theme in use."""
 
-class Version(TypedDict):
+class DirectusVersion(TypedDict):
     id: str
     """Primary key of the Content Version."""
 
