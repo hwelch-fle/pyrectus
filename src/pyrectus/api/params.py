@@ -1,7 +1,9 @@
 from __future__ import annotations
-from typing import Any, Literal
+from typing import Literal, TypedDict
 
-FilterOpts = Literal[
+from httpx import QueryParams
+
+FilterOp = Literal[
     '_eq',
     '_neq',
     '_lt',
@@ -37,18 +39,74 @@ FilterOpts = Literal[
     '_none',
 ]
 
-def parameters(
-    id: int | str | None=None,
-    collection: str | None=None,
-    search: str | None=None,
-    page: int | None=None,
-    offset: int | None=None,
-    sort: list[str] | None=None,
-    meta: str | None=None,
-    limit: int | None=None,
-    filter: dict[str, dict[FilterOpts, Any]] | None=None,
-    fields: list[str] | None=None,
-    export: Literal['csv', 'json', 'xml', 'yaml'] | None=None,
-    version: str | None=None,
-    backlink: bool | None=True,
-)
+LogicOp = Literal['_and', '_or']
+
+FieldFunctions = Literal['year', 'month', 'week', 'day', 'weekday', 'hour', 'minute', 'second', 'count']
+AggregationFunc = Literal['count', 'countDistinct', 'sum', 'sumDistinct', 'avg', 'avgDistinct', 'min', 'max']
+
+class CurrentUser: ...
+
+class CurrentRole: ...
+
+class Now: ...
+
+class Fields: ...
+
+class Follow: ...
+
+class Filter:
+    def __init__(self, field: str, op: FilterOp):
+        self.field = field
+        self.op = op
+    
+
+class Search: ...
+
+class Sort: ...
+
+class Limit: ...
+
+class Offset: ...
+
+class Page: ...
+
+class Aggregate:
+    def __init__(self, func: AggregationFunc, *fields: Literal['*'] | str) -> None:
+        self.func = func
+        self.fields = fields
+    
+    def __str__(self) -> str:
+        return f'agregate[{self.func}]={",".join(self.fields)}'
+
+class GroupBy: ...
+
+class Deep: ...
+
+class Alias: ...
+
+class Export: ...
+
+class Version: ...
+
+class VersionRaw: ...
+
+
+
+class Params(TypedDict, total=False):
+    fields: Fields
+    filter: Filter
+    search: Search
+    sort: Sort
+    limit: Limit
+    offset: Offset
+    page: Page
+    aggregate: Aggregate
+    groupBy: GroupBy
+    deep: Deep
+    alias: Alias
+    export: Export
+    version: Version | VersionRaw
+    backlink: bool
+    
+
+def parse_params(params: Params) -> QueryParams: ...
