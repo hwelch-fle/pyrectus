@@ -1,0 +1,3 @@
+[submodule "submodules/openapi"]
+	path = submodules/openapi
+	url = https://github.com/directus/openapi.git
