@@ -1,7 +1,10 @@
 from __future__ import annotations
+from abc import ABC
 from typing import Literal, TypedDict
 
 from httpx import QueryParams
+
+__all__ = ['Fields', 'Filter', 'Search', 'Sort', 'Limit', 'Offset', ]
 
 FilterOp = Literal[
     '_eq',
@@ -44,6 +47,9 @@ LogicOp = Literal['_and', '_or']
 FieldFunctions = Literal['year', 'month', 'week', 'day', 'weekday', 'hour', 'minute', 'second', 'count']
 AggregationFunc = Literal['count', 'countDistinct', 'sum', 'sumDistinct', 'avg', 'avgDistinct', 'min', 'max']
 
+class DirectusParameter(ABC):
+    def __call__(self) -> dict[str, str]: ...
+
 class CurrentUser: ...
 
 class CurrentRole: ...
@@ -54,44 +60,47 @@ class Fields: ...
 
 class Follow: ...
 
-class Filter:
+class Filter(DirectusParameter):
     def __init__(self, field: str, op: FilterOp):
         self.field = field
         self.op = op
     
 
-class Search: ...
+class Search(DirectusParameter): ...
 
-class Sort: ...
+class Sort(DirectusParameter): ...
 
-class Limit: ...
+class Limit(DirectusParameter): ...
 
-class Offset: ...
+class Offset(DirectusParameter): ...
 
-class Page: ...
-
-class Aggregate:
+class Page(DirectusParameter): ...
+    
+class Aggregate(DirectusParameter):
     def __init__(self, func: AggregationFunc, *fields: Literal['*'] | str) -> None:
         self.func = func
         self.fields = fields
     
-    def __str__(self) -> str:
-        return f'agregate[{self.func}]={",".join(self.fields)}'
+    def __call__(self) -> dict[str, str]:
+        return {f'agregate[{self.func}]': ','.join(self.fields)}
 
-class GroupBy: ...
+class GroupBy(DirectusParameter): ...
 
-class Deep: ...
+class Deep(DirectusParameter): ...
 
-class Alias: ...
+class Alias(DirectusParameter): ...
 
-class Export: ...
+class Export(DirectusParameter): ...
 
-class Version: ...
+class Version(DirectusParameter): ...
 
-class VersionRaw: ...
+class VersionRaw(DirectusParameter): ...
 
+class Backlink(DirectusParameter): ...
 
+class Meta(DirectusParameter): ...
 
+# Root param object that compiles all built parameters
 class Params(TypedDict, total=False):
     fields: Fields
     filter: Filter
@@ -106,7 +115,14 @@ class Params(TypedDict, total=False):
     alias: Alias
     export: Export
     version: Version | VersionRaw
-    backlink: bool
+    backlink: Backlink
     
 
-def parse_params(params: Params) -> QueryParams: ...
+def parse_params(params: Params) -> QueryParams:
+    qp = QueryParams()
+    
+    for _, v in params.items():
+        v: DirectusParameter
+        qp.update(v())
+    
+    return qp

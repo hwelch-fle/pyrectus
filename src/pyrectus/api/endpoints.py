@@ -6,12 +6,30 @@ from typing import Generic, TypeVar, Unpack
 from httpx import Client, AsyncClient, Response, QueryParams
 from urllib.parse import urljoin
 
+from .params import (
+    DirectusParameter,
+    Fields,
+    Filter,
+    Search,
+    Sort,
+    Limit,
+    Offset,
+    Page,
+    Aggregate,
+    GroupBy,
+    Deep,
+    Alias,
+    Export,
+    Version,
+    VersionRaw,
+    Backlink,
+    Meta,
+)
 from .schema import *
 _S = TypeVar('_S')
 
         
-def make_endpoint(endpoint: str, method: Literal['GET', 'POST', 'PATCH', 'DELETE']):
-    def _inner(func: Callable[..., _S]) -> Callable[..., _S]:
+def make_endpoint(endpoint: str, method: Literal['GET', 'POST', 'PATCH', 'DELETE'], params: tuple[type[DirectusParameter]]): ...
         
 
 class _Endpoint:
@@ -20,11 +38,11 @@ class _Endpoint:
     
 class Activity(_Endpoint):
     
-    @make_endpoint('/activity/{id}')
-    def get_activity(self, id: int, **params: Any) -> DirectusActivity: ...
+    @make_endpoint('/activity/{id}', 'GET', (Fields, Meta))
+    def get_activity(self, id: int, *parms: Fields | Meta) -> DirectusActivity: ...
     
-    @make_endpoint('/activity')
-    def get_activities(self) -> list[DirectusActivity]: ...
+    @make_endpoint('/activity', 'GET', (Fields, Limit, Meta, Offset, Sort, Filter, Search))
+    def get_activities(self, *params: Fields | Limit | Meta | Offset | Sort | Filter | Search) -> list[DirectusActivity]: ...
 
 class Assets(_Endpoint):
     def get_asset() -> Response: ...
